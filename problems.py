@@ -1,14 +1,17 @@
-from bs4 import BeautifulSoup as BS
+from bs4 import BeautifulSoup as bs
 import requests
 
-# for i in ['1','2','3','4','5','6','7','8','9','10','A','B']:
-problem = []
-for i in ['1']:
-    file_url = 'http://sverh-zadacha.ucoz.ru/9/Skrelin/V/8-' + i + '-5.htm'
+
+
+def problems(lat_index='V', index='5'):
+    problem = []
+    itog = ''
+    # Вопросы карточек одинаковы
+    file_url = 'http://sverh-zadacha.ucoz.ru/9/Skrelin/' + lat_index + '/8-1-' + index + '.htm'
     resp = requests.get(file_url)
     resp.encoding = 'utf-8'
     s = resp.text
-    soup = BS(s, 'html.parser')
+    soup = bs(s, 'html.parser')
 
     ss = soup.findAll('div', 'ans')
 
@@ -18,8 +21,8 @@ for i in ['1']:
             .replace('<b>', '').replace('</div>', '') \
             .replace('<br/>', '').replace('\r', ' ').strip()
         problem.append(b)
+    print(problem)
 
-    # soup = BS(s, 'lxml')
     razm = []
     for n in soup.select('input'):
         nn = n.next_sibling
@@ -28,7 +31,8 @@ for i in ['1']:
         n = str(nn)
         c = n.replace('\r\n', '')
         razm.append(c)
-d = dict(zip(problem, razm))
-for key in d:
-    itog = "'" + key + "'=>'" + d[key] + "',"
-    print(itog)
+    print(razm)
+    d = dict(zip(problem, razm))
+    for key in d:
+        itog += "'" + key + "'=>'" + d[key] + "',"
+    return "$problems = [" + itog + "];"
